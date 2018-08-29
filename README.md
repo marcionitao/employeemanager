@@ -1,4 +1,4 @@
-# employeemanager
+# Employee Manager
 
 > A simple personal employee manager app in Vuejs
 
