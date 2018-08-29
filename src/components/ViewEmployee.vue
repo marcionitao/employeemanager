@@ -13,10 +13,10 @@ export default {
 
     };
   },
-
+/*
   methods() {
 
-  },
+  }, */
 };
 
 </script>
