@@ -1,19 +1,32 @@
 <template>
   <div id='dashboard'>
-    <h3>Dashboard</h3>
+    <h4>Dashboard</h4>
 
-      <ul class="collection with-header">
-         <li class="collection-header"><h4>Employees</h4></li>
-         <li v-for="employee in employees" v-bind:key="employee.id" class="collection-item">
-           <div class="chip">{{employee.dept}}</div>
-           {{employee.employee_id}}:{{employee.name}}
-           <!--passando os dados por parametro e chamando a pagina view-->
-           <router-link class="secondary-content" v-bind:to="{name:
-           'view-employee', params: {employee_id: employee.employee_id}}">
-           <i class="fa fa-eye"></i>
-           </router-link>
-         </li>
-      </ul>
+    <div class="container">
+      <table>
+        <thead>
+          <tr>
+              <th>DEPTº</th>
+              <th>ID</th>
+              <th>NAME</th>
+              <th>ACTION</th>
+          </tr>
+        </thead>
+
+        <tbody>
+         <tr v-for="employee in employees" v-bind:key="employee.id">
+              <th class="chip">{{employee.dept}}</th>
+              <th>{{employee.employee_id}}</th>
+              <th>{{employee.name}}</th>
+              <th> <router-link  v-bind:to="{name:
+              'view-employee', params: {employee_id: employee.employee_id}}">
+               <i class="fa fa-eye"></i>
+               </router-link>
+              </th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <div class="fixed-action-btn">
       <router-link to="/new" class="btn-floating btn-large red">
@@ -34,10 +47,6 @@ export default {
     };
   },
   created() {
-    /*
-    const timestamp = snapshot.get('created_at');
-    const date = timestamp.toDate(); */
-
     db.collection('employees').orderBy('dept').get().then(
       (querySnapshot) => {
         querySnapshot.forEach((doc) => {

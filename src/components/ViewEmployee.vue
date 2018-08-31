@@ -1,26 +1,83 @@
 <template>
   <div id='view-employee'>
-    <h3>View Employee</h3>
+    <ul class="collection with-header">
+      <li class="collection-header"><h4>{{name}}</h4></li>
+      <li class="collection-item">Employee Id#: {{employee_id}}</li>
+      <li class="collection-item">Deptº: {{dept}}</li>
+      <li class="collection-item">Position: {{position}}</li>
+    </ul>
+    <router-link to="/" class="btn green">Back</router-link>
+    <button @click="deleteEmployee" class="btn red">Delete</button>
   </div>
 </template>
 
 <script>
+import db from './firebaseInit';
 
 export default {
+
   name: 'view-employee',
   data() {
     return {
-
+      employee_id: null,
+      name: null,
+      dept: null,
+      position: null,
     };
   },
-/*
-  methods() {
+  // called before the route that renders this component is confirmed.
+  // does NOT have access to `this` component instance,
+  // because it has not been created yet when this guard is called!
+  beforeRouteEnter(to, from, next) {
+    db.collection('employees').where('employee_id', '==', to.params.employee_id).get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          /* eslint-disable no-param-reassign */
+          next((vm) => {
+            vm.employee_id = doc.data().employee_id;
+            vm.name = doc.data().name;
+            vm.dept = doc.data().dept;
+            vm.position = doc.data().position;
+            /* eslint-enable no-param-reassign */
+          });
+        });
+      },
+      );
+  },
 
-  }, */
+  watch: {
+    $route: 'fetchData',
+  },
+
+  methods: {
+    fetchData() {
+      db.collection('employees').where('employee_id', '==', this.$route.params.employee_id).get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            this.employee_id = doc.data().employee_id;
+            this.name = doc.data().name;
+            this.dept = doc.data().dept;
+            this.position = doc.data().position;
+          });
+        });
+    },
+
+    deleteEmployee() {
+      // eslint-disable-next-line
+      if (confirm('Are you sure?')) {
+        db.collection('employees').where('employee_id', '==', this.$route.params.employee_id).get()
+          .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+              doc.ref.delete();
+              this.$router.push('/');
+            });
+          });
+      }
+    },
+  },
 };
 
 </script>
 
 <style scoped>
-
 </style>
