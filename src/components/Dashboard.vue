@@ -18,10 +18,11 @@
               <th class="chip">{{employee.dept}}</th>
               <th>{{employee.employee_id}}</th>
               <th>{{employee.name}}</th>
-              <th> <router-link  v-bind:to="{name:
-              'view-employee', params: {employee_id: employee.employee_id}}">
-               <i class="fa fa-eye"></i>
-               </router-link>
+              <th>
+                <router-link  v-bind:to="{name:'view-employee', params:
+                {employee_id: employee.employee_id}}">
+                  <i class="fa fa-eye"></i>
+                </router-link>
               </th>
           </tr>
         </tbody>

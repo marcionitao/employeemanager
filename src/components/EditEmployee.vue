@@ -1,22 +1,114 @@
 <template>
   <div id='edit-employee'>
     <h3>Edit Employee</h3>
+    <div class="row">
+
+      <form @submit.prevent.stop="updateEmployee" class="col s12">
+
+        <div class="row">
+          <div class="input-field col s12">
+            <input disabled type="text" v-model="employee_id" required>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="input-field col s12">
+            <input type="text" v-model="name" required>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="input-field col s12">
+            <input type="text" v-model="dept" required>
+          </div>
+        </div>
+
+         <div class="row">
+          <div class="input-field col s12">
+            <input type="text" v-model="position" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn">Submit</button>
+        <router-link to="/" class="btn grey">Cancel</router-link>
+      </form>
+
+    </div>
   </div>
 </template>
 
 <script>
+import db from './firebaseInit';
 
 export default {
   name: 'edit-employee',
   data() {
     return {
-
+      employee_id: null,
+      name: null,
+      dept: null,
+      position: null,
     };
   },
-/*
-  methods() {
 
-  }, */
+  // called before the route that renders this component is confirmed.
+  // does NOT have access to `this` component instance,
+  // because it has not been created yet when this guard is called!
+  beforeRouteEnter(to, from, next) {
+    db.collection('employees').where('employee_id', '==', to.params.employee_id).get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          /* eslint-disable no-param-reassign */
+          next((vm) => {
+            vm.employee_id = doc.data().employee_id;
+            vm.name = doc.data().name;
+            vm.dept = doc.data().dept;
+            vm.position = doc.data().position;
+            /* eslint-enable no-param-reassign */
+          });
+        });
+      },
+      );
+  },
+
+  watch: {
+    $route: 'fetchData',
+  },
+
+  methods: {
+    fetchData() {
+      db.collection('employees').where('employee_id', '==', this.$route.params.employee_id).get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            this.employee_id = doc.data().employee_id;
+            this.name = doc.data().name;
+            this.dept = doc.data().dept;
+            this.position = doc.data().position;
+          });
+        });
+    },
+
+    updateEmployee() {
+      db.collection('employees').where('employee_id', '==', this.$route.params.employee_id).get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            doc.ref.update({
+              employee_id: this.employee_id,
+              name: this.name,
+              dept: this.dept,
+              position: this.position,
+            }).then(() => {
+              this.$router.push({
+                name: 'view-employee',
+                params: {
+                  employee_id: this.employee_id,
+                },
+              });
+            });
+          });
+        });
+    },
+  },
 };
 
 </script>
