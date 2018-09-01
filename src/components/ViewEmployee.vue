@@ -7,7 +7,7 @@
       <li class="collection-item">Position: {{position}}</li>
     </ul>
     <router-link to="/" class="btn green">Back</router-link>
-    <button @click="deleteEmployee" class="btn red">Delete</button>
+    <button @click.prevent.stop="deleteEmployee" class="btn red">Delete</button>
   </div>
 </template>
 
